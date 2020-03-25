@@ -12,27 +12,41 @@
   <body>
     <canvas id="canvas" width="10" height="10"></canvas>
     <script>
-      let canvas = document.getElementById("canvas");
-      canvas.width = document.documentElement.clientWidth;
-      canvas.height = document.documentElement.clientHeight;
-      let ctx = canvas.getContext("2d");
-      ctx.fillStyle = "blue";
+      let canvas = document.getElementById("canvas"); // 声明变量canvas并令其指向id为canvas的元素（新的语法let）
+      canvas.width = document.documentElement.clientWidth; // 将变量canvas（#canvas元素）的宽度width赋值为文档根元素内部宽度
+      canvas.height = document.documentElement.clientHeight; // 将变量canvas（#canvas元素）的宽度width赋值为文档根元素内部宽度
+      let ctx = canvas.getContext("2d"); // 声明变量ctx指向canvas二维上下文
+      ctx.strokeStyle = "rgba(255,0,255,0.6)"; // 设置边缘颜色
+      ctx.fillStyle = "rgba(255,0,255,0.6)"; // 设置填充颜色
 
       let painting = false;
       canvas.onmousedown = () => {
         painting = true;
       };
+      canvas.onmouseup = () => {
+        painting = false;
+      };
       canvas.onmousemove = e => {
         console.log(e.clientX);
         console.log(e.clientY);
         if (painting === true) {
-          ctx.fillCir(e.clientX - 5, e.clientY - 5, 10, 10);
-        } else {
-          console, log("啥都不做");
-        }
+          ctx.beginPath();
+          ctx.arc(e.clientX, e.clientY, 5, 0, 2 * Math.PI); // 画曲线
+          ctx.fill();
+          ctx.closePath();
+          ctx.stroke();
+        };
       };
-      canvas.onmouseup = () => {
-        painting = false;
+
+      canvas.ontouchmove = (e) =>{
+        console.log(e.touches[0].clientX, e.touches[0].clientY);
+        let x = e.touches[0].clientX
+        let y = e.touches[0].clientY
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI)
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
       };
     </script>
   </body>
