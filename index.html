@@ -12,6 +12,23 @@
   <body>
     <canvas id="canvas" width="10" height="10"></canvas>
     <script>
+      // canvas.onclick = (e) =>{
+      //   console.log(e);
+      //   console.log(e.clientX);
+      //   console.log(e.clientY);
+      //   let div = document.createElement("div");
+      //   div.style.border = "1px solid black";
+      //   div.style.width = "6px";
+      //   div.style.height = "6px";
+      //   div.style.position = "absolute";
+      //   div.style.left = e.clientX;
+      //   div.style.top = e.clientY;
+      //   div.style.marginLeft = "-3px";
+      //   div.style.marginTop = "-3px";
+      //   div.style.borderRadius = "50%";
+      //   div.style.backgroundColor = "black";
+      //   canvas.appendChild(div);
+      // };
       let canvas = document.getElementById("canvas"); // 声明变量canvas并令其指向id为canvas的元素（新的语法let）
       canvas.width = document.documentElement.clientWidth; // 将变量canvas（#canvas元素）的宽度width赋值为文档根元素内部宽度
       canvas.height = document.documentElement.clientHeight; // 将变量canvas（#canvas元素）的宽度width赋值为文档根元素内部宽度
@@ -20,33 +37,59 @@
       ctx.fillStyle = "rgba(255,0,255,0.6)"; // 设置填充颜色
 
       let painting = false;
-      canvas.onmousedown = () => {
+      let lastX = 0;
+      let lastY = 0;
+      let touchX = 0;
+      let touchY = 0;
+      canvas.onmousedown = e => {
         painting = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
       };
-      canvas.onmouseup = () => {
+      canvas.onmouseup = e => {
         painting = false;
+        lastX = e.clientX;
+        lastY = e.clientY;
       };
       canvas.onmousemove = e => {
-        console.log(e.clientX);
-        console.log(e.clientY);
+        // console.log(e.clientX);
+        // console.log(e.clientY);
         if (painting === true) {
           ctx.beginPath();
-          ctx.arc(e.clientX, e.clientY, 5, 0, 2 * Math.PI); // 画曲线
-          ctx.fill();
+          ctx.lineWidth = 10;
+          ctx.lineJoin = "round";
+          ctx.moveTo(lastX, lastY);
+          ctx.lineTo(e.clientX, e.clientY);
           ctx.closePath();
           ctx.stroke();
-        };
+          lastX = e.clientX;
+          lastY = e.clientY;
+        }
       };
 
-      canvas.ontouchmove = (e) =>{
-        console.log(e.touches[0].clientX, e.touches[0].clientY);
-        let x = e.touches[0].clientX
-        let y = e.touches[0].clientY
+      canvas.ontouchstart = e => {
+        // console.log(e.touches);
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+      };
+      canvas.ontouchend = e => {
+        console.log(e.touches);
+        // lastX = e.touches[0].clientX;
+        // lastY = e.touches[0].clientY;
+      };
+      canvas.ontouchmove = e => {
+        // console.log(e.touches[0].clientX, e.touches[0].clientY);
+        touchX = e.touches[0].clientX;
+        touchY = e.touches[0].clientY;
         ctx.beginPath();
-        ctx.arc(x, y, 5, 0, 2 * Math.PI)
-        ctx.fill();
+        ctx.lineWidth = 10;
+        ctx.lineJoin = "round";
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(touchX, touchY);
         ctx.closePath();
         ctx.stroke();
+        lastX = touchX;
+        lastY = touchY;
       };
     </script>
   </body>
